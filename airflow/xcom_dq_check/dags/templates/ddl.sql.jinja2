@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS stuff_{{ ds_nodash }};
+CREATE TABLE stuff_{{ ds_nodash }}
+(
+f1 varchar(1),
+f2 int
+);
+
+SELECT 'table_name', 'stuff_{{ ds_nodash }}';

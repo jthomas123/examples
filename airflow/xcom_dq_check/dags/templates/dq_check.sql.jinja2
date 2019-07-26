@@ -1,0 +1,2 @@
+SELECT {{ task_instance.xcom_pull(task_ids='read_and_insert', key='rowcount') }} =
+    ( SELECT COUNT(1) FROM {{ task_instance.xcom_pull(task_ids='ddl', key='table_name') }} );
