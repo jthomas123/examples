@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from glob import glob
 
 from airflow import DAG
@@ -43,14 +43,15 @@ def run_and_push(**kwargs):
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,
-    "start_date": datetime(2015, 6, 1),
+    "start_date": datetime(2019, 7, 28),
+    "end_date": datetime(2019, 7, 29),
     "email_on_failure": False,
     "email_on_retry": False,
     "retries": 1,
-    "retry_delay": timedelta(minutes=5),
+    "retry_delay": timedelta(minutes=5)
 }
 
-dag = DAG("xcom_demo", default_args=default_args, schedule_interval=None)
+dag = DAG("xcom_demo", default_args=default_args, schedule_interval=timedelta(1))
 
 ddl_task = SQLTemplatedPythonOperator(
     task_id='ddl',
@@ -74,8 +75,8 @@ dq_check_task = CheckOperator(
     task_id="dq_check",
     sql=check_sql,
     conn_id='postgres_default',
-    provide_context=True,
     dag=dag
 )
 
 ddl_task >> read_and_insert_task >> dq_check_task
+
